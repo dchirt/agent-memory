@@ -1,0 +1,3 @@
+mcp[cli]
+sqlite-vec
+sentence-transformers
