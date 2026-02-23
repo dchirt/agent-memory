@@ -1,6 +1,54 @@
-# agent-memory
+# kiro-memory
 
-# Memory Layer — Agent Instructions
+A persistent, structured memory layer for AI agents via MCP (Model Context Protocol).
+Backed by SQLite with vector embeddings (all-MiniLM-L6-v2) for semantic search and FTS5 for keyword search.
+
+## Setup
+
+### Prerequisites
+
+- Docker (with Rosetta/QEMU support on Apple Silicon)
+
+### Build
+
+```bash
+docker build --platform linux/amd64 -t kiro-memory:latest .
+```
+
+> The `--platform linux/amd64` flag is required because `sqlite-vec` does not ship a native aarch64 Linux binary.
+
+### Register with Kiro
+
+Add the following to `~/.kiro/settings/mcp.json` under `mcpServers`:
+
+```json
+"kiro-memory": {
+  "command": "docker",
+  "args": [
+    "run",
+    "--platform", "linux/amd64",
+    "-i",
+    "--rm",
+    "-v",
+    "<HOME_DIR>/.kiro/memory:/data",
+    "kiro-memory:latest"
+  ],
+  "disabled": false,
+  "autoApprove": ["*"]
+}
+```
+
+Replace `<HOME_DIR>` with your absolute home directory path (e.g. `/Users/yourname`).
+
+The `-v` mount ensures the SQLite database at `~/.kiro/memory/agent_memory.db` persists across container restarts.
+
+### Verify
+
+Restart Kiro and confirm the 8 memory tools are available (`memory_store`, `memory_query`, `memory_propose`, `memory_review`, `memory_confirm`, `memory_delete`, `memory_stats`, `memory_search_keyword`).
+
+---
+
+# Agent Instructions
 
 ## Overview
 
